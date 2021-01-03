@@ -12,7 +12,7 @@ namespace HelloWorldMensageria
     {
         public static void SendHelloWorldsEvery5Seconds(this Startup startup)
         {
-            var helloWorld = new HelloWorld("Hello World!", Guid.NewGuid());
+            var helloWorld = new HelloWorld();
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())

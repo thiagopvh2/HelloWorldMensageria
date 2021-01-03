@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace HelloWorldMensageria.Models
 {
     public class HelloWorld
     {
-        public HelloWorld(string message, Guid serviceId)
+        public HelloWorld()
         {
-            Message = message;
-            ServiceId = serviceId;
+            Message = "Hello World!";
+            ServiceId = Process.GetCurrentProcess().Id;
             RequestId = Guid.NewGuid();
             Timestamp = DateTime.Now;
         }
-
-        public HelloWorld() { }
         public string Message { get; private set; }
-        public Guid ServiceId { get; private set; }
+        public int ServiceId { get; private set; }
         public Guid RequestId { get; private set; }
         public DateTime Timestamp { get; private set; }
     }

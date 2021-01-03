@@ -13,45 +13,6 @@ namespace HelloWorldMensageria.Controllers
     [ApiController]
     public class HelloWorldController : ControllerBase
     {
-        private ILogger<HelloWorldController> _logger;
-
-        public HelloWorldController(ILogger<HelloWorldController> logger)
-        {
-            _logger = logger;
-        }
-
-        [HttpPost]
-        public IActionResult SendHelloWorld(HelloWorld helloWorld)
-        {
-            try
-            {
-                var factory = new ConnectionFactory() { HostName = "localhost" };
-                using (var connection = factory.CreateConnection())
-                using (var channel = connection.CreateModel())
-                {
-                    channel.QueueDeclare(queue: "helloworld",
-                                         durable: false,
-                                         exclusive: false,
-                                         autoDelete: false,
-                                         arguments: null);
-
-                    string message = JsonSerializer.Serialize(helloWorld);
-                    var body = Encoding.UTF8.GetBytes(message);
-
-                    channel.BasicPublish(exchange: "",
-                                         routingKey: "helloworld",
-                                         basicProperties: null,
-                                         body: body);
-                }
-                return Accepted();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Erro ao enviar requisição!", e);
-                return new StatusCodeResult(500);
-            }
-        }
-
         [HttpGet]
         public IActionResult GetHelloWorld()
         {
@@ -76,6 +37,7 @@ namespace HelloWorldMensageria.Controllers
                 channel.BasicConsume(queue: "helloworld",
                                      autoAck: true,
                                      consumer: consumer);
+
                 return new ObjectResult(new { mensagem = "Hello World" });
             }
         }
