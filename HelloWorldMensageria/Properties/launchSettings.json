@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/HelloWorld/GetHelloWorld",
+      "launchUrl": "api/Helloworld",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,7 @@
     "HelloWorldMensageria": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/Helloworld/GetHelloWorld",
+      "launchUrl": "api/Helloworld",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

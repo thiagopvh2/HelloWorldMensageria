@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System;
 using System.Text;
 using System.Text.Json;
 
@@ -13,6 +12,13 @@ namespace HelloWorldMensageria.Controllers
     [ApiController]
     public class HelloWorldController : ControllerBase
     {
+        private readonly ILogger<HelloWorldController> _logger;
+
+        public HelloWorldController(ILogger<HelloWorldController> logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet]
         public IActionResult GetHelloWorld()
         {
@@ -26,19 +32,21 @@ namespace HelloWorldMensageria.Controllers
                                      autoDelete: false,
                                      arguments: null);
 
+                var messageToBeReceived = "";
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
                 {
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
                     var helloWorld = JsonSerializer.Deserialize<HelloWorld>(message);
-                    Console.WriteLine($"Mensagem:{helloWorld.Message} | Id da requisição:{helloWorld.RequestId} | Id do serviço:{helloWorld.ServiceId} | Timestamp:{helloWorld.Timestamp}");
+                    messageToBeReceived = $"Mensagem:{helloWorld.Message} | Id da requisição:{helloWorld.RequestId} | Id do serviço:{helloWorld.ServiceId} | Timestamp:{helloWorld.Timestamp}";
+                    _logger.LogInformation(messageToBeReceived);
                 };
                 channel.BasicConsume(queue: "helloworld",
                                      autoAck: true,
                                      consumer: consumer);
 
-                return new ObjectResult(new { mensagem = "Hello World" });
+                return new ObjectResult(new { mensagem = messageToBeReceived});
             }
         }
     }
